@@ -155,6 +155,9 @@ class SortedLinkedListHeap(AbstractLinkedListHeap):
 
 
 class UnsortedLinkedListHeap(AbstractLinkedListHeap):
+    def __init__(self):
+        super().__init__()
+        self.last = None
 
     def insert_node(self, val: int):
         """
@@ -164,6 +167,8 @@ class UnsortedLinkedListHeap(AbstractLinkedListHeap):
         :param val:             The new value to insert
         """
         new_node = Node(val)
+        if not self.head:
+            self.last = new_node
         new_node.next = self.head
         self.head = new_node
 
@@ -179,6 +184,10 @@ class UnsortedLinkedListHeap(AbstractLinkedListHeap):
         while self.head and self.head.val == min_val:
             # If the head is the minimum value unlink it and set the new head
             node_to_del = self.head
+            if self.last == node_to_del:
+                # If the node we're deleting from the head is the last one as well
+                # set the ptr to the last node to None
+                self.last = None
             self.head = self.head.next
             del node_to_del
             if is_unique:
@@ -193,6 +202,10 @@ class UnsortedLinkedListHeap(AbstractLinkedListHeap):
             # Find all the nodes with the minimum value and unlink them
             if curr_node.next.val == min_val:
                 node_to_del = curr_node.next
+                if self.last == node_to_del:
+                    # If the node we're about to delete is the last one, we move the ptr to the last
+                    # node to be the current node
+                    self.last = curr_node
                 curr_node.next = curr_node.next.next
                 del node_to_del     # Delete the node with the minimum value
                 if is_unique:
@@ -218,7 +231,8 @@ class UnsortedLinkedListHeap(AbstractLinkedListHeap):
 
     def union_heaps(self, heap_to_union):
         """
-        Union the heaps. As they are unsorted we just append the list to union to the existing list
+        Union the heaps. We're keeping track of the last node, so we just switch the pointers around
+        Now the last is linked to the merged head, and the last is pointed to the merged last node
         Runtime analysis:
             * O(n)
         Note:
@@ -226,10 +240,8 @@ class UnsortedLinkedListHeap(AbstractLinkedListHeap):
             operation would've been done in a runtime complexity of O(1)
         :param heap_to_union:           The heap to union
         """
-        curr_node = self.head
-        while curr_node.next:
-            curr_node = curr_node.next
-        curr_node.next = heap_to_union.head
+        self.last.next = heap_to_union.head
+        self.last = heap_to_union.last
 
 
 class UnsortedUniqueLinkedListHeap(UnsortedLinkedListHeap):
