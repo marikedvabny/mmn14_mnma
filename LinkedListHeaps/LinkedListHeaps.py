@@ -213,6 +213,8 @@ class UnsortedLinkedListHeap(AbstractLinkedListHeap):
             else:
                 curr_node = curr_node.next
 
+        return min_val
+
     def get_min(self) -> int:
         """
         Runtime analysis:

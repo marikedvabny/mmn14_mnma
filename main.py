@@ -119,7 +119,6 @@ def run_unsorted():
             print("*** Invalid user input ***")
 
 
-
 def check_value_in_all_heaps(heaps, val):
     """
     Check that value val is not found in any of the existing heaps
